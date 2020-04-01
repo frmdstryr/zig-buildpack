@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+# This script serves as the
+# [**Zig Buildpack**](https://github.com/heroku/heroku-buildpack-python)
+# detector.
+#
+# A [buildpack](http://devcenter.heroku.com/articles/buildpacks) is an
+# adapter between a Zig application and Heroku's runtime.
+
+# ## Usage
+# Compiling an app into a slug is simple:
+#
+#     $ bin/detect <build-dir> <cache-dir>
+
+BUILD_DIR=$1
+
+# Exit early if app is clearly not a zig project.
+if [ -f $BUILD_DIR/build.zig ]; then
+  echo Zig
+else
+  exit 1
+fi

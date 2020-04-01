@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+
+ZIGLANG_VERSION=$(cat build.zig | grep '// zig-release:' | cut -c 17- | tr -d " \n")
+IFS='-' read -r -a VERSION_ARRAY <<< ${ZIGLANG_VERSION}
+VERSION=${VERSION_ARRAY[1]}
+
+# The location of the pre-compiled zig build.
+VENDORED_ZIGLANG="${ZIGLANG_URL}/builds/${ZIGLANG_VERSION}"
+
+if [ ! -d /app/.heroku/ziglang ]; then
+    puts-step "Preparing Zig Build Environment"
+    puts-step "Downloading ${VENDORED_ZIGLANG}"
+    if ! curl -Ofv $VENDORED_ZIGLANG ; then
+        exit 1
+    fi
+    mkdir -p /app/.heroku/ziglang/
+    tar -xvf ${ZIGLANG_VERSION} --directory /app/.heroku/ziglang/ --strip-components=1 | indent
+    rm -fr ${ZIGLANG_VERSION}
+fi
+
+# Build the project
+puts-step "Building zig project"
+zig build | indent
