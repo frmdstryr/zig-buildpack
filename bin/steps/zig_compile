@@ -19,6 +19,11 @@ if [ ! -d /app/.heroku/ziglang ]; then
     rm -fr ${ZIGLANG_VERSION}
 fi
 
+if [ -f prebuild.zig ]; then
+    puts-step "Running zig prebuild"
+    zig run prebuild.zig | indent
+fi
+
 # Build the project
 puts-step "Building zig project"
 zig build | indent

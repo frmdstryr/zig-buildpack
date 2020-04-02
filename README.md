@@ -23,6 +23,8 @@ which version of zig to download and extract (see bin/steps/zig_compile).
 
 The supported zig builds are the ones in [this list](https://ziglang.org/download/).
 
+If the repo contains a `prebuild.zig` file in the repository root, that
+will be run before building (eg to download files/repos needed).
 
 It will run then run `zig build` and the rest is up to the `Procfile`.
 
