@@ -8,6 +8,18 @@ VERSION=${VERSION_ARRAY[1]}
 # The location of the pre-compiled zig build.
 VENDORED_ZIGLANG="${ZIGLANG_URL}/builds/${ZIGLANG_VERSION}"
 
+# Remove old file if needed
+if [ -f /app/.heroku/ziglang/buildpack-version.txt ]; then
+    PREVIOUS_VERSION=$(cat /app/.heroku/ziglang/buildpack-version.txt | tr -d " \n")
+    if [ "${PREVIOUS_VERSION}" == "${ZIGLANG_VERSION}" ]; then
+        puts-step "Zig build is up to date"
+    else
+        puts-step "Zig build is out of date. Cleaning up..."
+        rm -Rf /app/.heroku/ziglang
+    fi
+fi
+
+
 if [ ! -d /app/.heroku/ziglang ]; then
     puts-step "Preparing Zig Build Environment"
     puts-step "Downloading ${VENDORED_ZIGLANG}"
@@ -17,6 +29,7 @@ if [ ! -d /app/.heroku/ziglang ]; then
     mkdir -p /app/.heroku/ziglang/
     tar -xvf ${ZIGLANG_VERSION} --directory /app/.heroku/ziglang/ --strip-components=1 | indent
     rm -fr ${ZIGLANG_VERSION}
+    echo ${ZIGLANG_VERSION} > /app/.heroku/ziglang/buildpack-version.txt
 fi
 
 if [ -f prebuild.zig ]; then
