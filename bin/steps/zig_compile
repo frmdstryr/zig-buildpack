@@ -27,7 +27,7 @@ if [ ! -d /app/.heroku/ziglang ]; then
         exit 1
     fi
     mkdir -p /app/.heroku/ziglang/
-    tar -xvf ${ZIGLANG_VERSION} --directory /app/.heroku/ziglang/ --strip-components=1 | indent
+    tar -xf ${ZIGLANG_VERSION} --directory /app/.heroku/ziglang/ --strip-components=1 | indent
     rm -fr ${ZIGLANG_VERSION}
     echo ${ZIGLANG_VERSION} > /app/.heroku/ziglang/buildpack-version.txt
 fi
